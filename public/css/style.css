@@ -29,3 +29,10 @@ a:hover {
     color: gold;
 }
 
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 500px;
+    margin: 20px auto;
+}
