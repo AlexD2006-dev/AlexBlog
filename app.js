@@ -4,6 +4,8 @@ const { logger } = require('./middleware/logger.js')
 const app = express()
 const PORT = 3000
 
+app.use('/blog', express.static('public'))
+
 app.use(logger)
 
 app.get('/', (request, response) => {
@@ -11,15 +13,15 @@ app.get('/', (request, response) => {
 })
 
 app.get('/about', (request, response) => {
-    response.send("About me and my blog")
+    response.sendFile('about.html', { root: 'public'})
 })
 
 app.get('/posts', (request, response) => {
-  response.send('All blog posts')
+  response.sendFile('posts.html', { root: 'public'})
 })
 
 app.get('/contact', (request, response) => {
-  response.send('Reach out to us if you have any questions.')
+  response.sendFile('contact.html', { root: 'public'})
 })
 
 app.get('/posts/:slug', (request, response) => {
