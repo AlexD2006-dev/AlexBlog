@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Alex' Blog - Edit Post</title>
+        <link rel="stylesheet" href="/blog/css/style.css" />
+    </head>
+    <body>
+        <header>
+            <h1>Alex' Blog</h1>
+            <nav>
+                <a href="/blog/landing.html">Home</a>
+                <a href="/about">About</a>
+                <a href="/posts">Posts</a>
+                <a href="/contact">Contact</a>
+            </nav>
+        </header>
+
+        <main>
+            <h2>Edit Post</h2>
+            <form action="/posts/<%= post.slug %>" method="POST">
+                <input type="text" value="<%= post.title %>" name="title" placeholder="Title" /><br />
+                <input type="text" value="<%= post.slug %>" name="slug" placeholder="slug" /><br />
+                <textarea name="description" placeholder="Short description"><%= post.description %></textarea><br />
+                <textarea name="content" placeholder="Post content"><%= post.content %></textarea><br />
+                <label>
+                    <input type="checkbox" name="isPublished" value="true" <%= post.isPublished ? 'checked' : '' %> /> Published
+                </label><br />
+                <button type="submit">Save Changes</button>
+            </form>
+        </main>
+
+        <footer>
+            <p>&copy; 2026 Alex' Blog. All rights reserved.</p>
+        </footer>
+    </body>
+</html>

@@ -14,12 +14,6 @@ app.use(express.urlencoded({ extended: true }))
 
 const PORT = 3000
 
-const posts = [
-    { title: 'My First Post', slug: 'my-first-post', description: 'This is my very first blog post!', isPublished: true },
-    { title: 'Griffindor & Coding', slug: 'griffindor-and-coding', description: 'What Griffindor house taught me about programming.', isPublished: true },
-    { title: 'Draft Post', slug: 'draft-post', description: 'Still working on this one...', isPublished: false }
-]
-
 app.use('/blog', express.static('public'))
 app.use(logger)
 
@@ -31,28 +25,17 @@ app.get('/about', (request, response) => {
     response.sendFile('about.html', { root: 'public' })
 })
 
-app.get('/posts', (request, response) => {
-    response.render('posts/index', { posts: posts })
-})
-
 app.get('/posts/new', (request, response) => {
     response.render('posts/new')
 })
 
-app.post('/posts', async (request, response) => {
+app.get('/posts', async (request, response) => {
     try {
-        const post = new Post({
-            title: request.body.title,
-            slug: request.body.slug,
-            description: request.body.description,
-            content: request.body.content,
-            isPublished: request.body.isPublished === 'true'
-        })
-        await post.save()
-        response.redirect('/posts')
-    } catch (error) {
+        const posts = await Post.find({ isPublished: true }).exec()
+        response.render('posts/index', { posts: posts })
+    } catch(error) {
         console.error(error)
-        response.send('Error: The post could not be created.')
+        response.render('posts/index', { posts: [] })
     }
 })
 
@@ -60,15 +43,17 @@ app.get('/contact', (request, response) => {
     response.sendFile('contact.html', { root: 'public' })
 })
 
-app.get('/posts/:slug', (request, response) => {
-    const slug = request.params.slug
-    const post = posts.find(p => p.slug === slug)
+app.get('/posts/:slug', async (request, response) => {
+    try {
+        const slug = request.params.slug
+        const post = await Post.findOne({ slug: slug }).exec()
+        if(!post) throw new Error('Post not found')
 
-    if (!post) {
-        return response.status(404).send('Post not found')
+        response.render('posts/show', { post: post })
+    } catch(error) {
+        console.error(error)
+        response.status(404).send('Could not find the post you\'re looking for.')
     }
-
-    response.render('posts/show', { post: post })
 })
 
 app.post('/contact', (request, response) => {
@@ -92,7 +77,6 @@ app.post('/posts', async (request, response) => {
         response.send('Error: The post could not be created.')
     }
 })
-
 
 app.listen(PORT, () => {
     console.log(`Started server on port ${PORT}`)
