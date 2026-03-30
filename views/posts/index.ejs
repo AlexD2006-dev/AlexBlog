@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Alex' Blog - Posts</title>
+        <link rel="stylesheet" href="/blog/css/style.css" />
+    </head>
+    <body>
+        <header>
+            <h1>Alex' Blog</h1>
+            <nav>
+                <a href="/blog/landing.html">Home</a>
+                <a href="/about">About</a>
+                <a href="/posts">Posts</a>
+                <a href="/contact">Contact</a>
+            </nav>
+        </header>
+
+        <main>
+            <h2>Posts</h2>
+            <a href="/posts/new">+ New Post</a>
+            <ul>
+                <% posts.forEach(post => { %>
+                    <li>
+                        <% if(post.isPublished) { %>
+                            <a href="/posts/<%= post.slug %>"><%= post.title %></a>
+                            <p><%= post.description %></p>
+                        <% } else { %>
+                            <%= post.title %> [DRAFT]
+                        <% } %>
+                    </li>
+                <% }) %>
+            </ul>
+        </main>
+
+        <footer>
+            <p>This is a static page.</p>
+            <p>&copy; 2026 Alex' Blog. All rights reserved.</p>
+        </footer>
+    </body>
+</html>
+
+

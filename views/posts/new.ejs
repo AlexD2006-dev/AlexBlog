@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Alex' Blog - New Post</title>
+        <link rel="stylesheet" href="/blog/css/style.css" />
+    </head>
+    <body>
+        <header>
+            <h1>Alex' Blog</h1>
+            <nav>
+                <a href="/blog/landing.html">Home</a>
+                <a href="/about">About</a>
+                <a href="/posts">Posts</a>
+                <a href="/contact">Contact</a>
+            </nav>
+        </header>
+
+        <main>
+            <h2>Create a New Post</h2>
+            <form action="/posts" method="POST">
+                <input type="text" name="title" placeholder="Title" required /><br />
+                <input type="text" name="slug" placeholder="slug (e.g. my-post)" required /><br />
+                <textarea name="description" placeholder="Short description" required></textarea><br />
+                <textarea name="content" placeholder="Post content" required></textarea><br />
+                <label>
+                    <input type="checkbox" name="isPublished" value="true" /> Published
+                </label><br />
+                <button type="submit">Save Post</button>
+            </form>
+        </main>
+
+        <footer>
+            <p>This is a static page.</p>
+            <p>&copy; 2026 Alex' Blog. All rights reserved.</p>
+        </footer>
+    </body>
+</html>
