@@ -23,9 +23,11 @@
             <hr>
             <p><%= post.content %></p>
             <br>
+            <a href="/posts/<%= post.slug %>/edit">Edit</a> | 
+            <a href="/posts/<%= post.slug %>/delete">Delete</a>
+            <br><br>
             <a href="/posts">← Back to posts</a>
         </main>
-
 
         <footer>
             <p>&copy; 2026 Alex' Blog. All rights reserved.</p>
