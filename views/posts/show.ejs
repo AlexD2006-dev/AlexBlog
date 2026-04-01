@@ -9,6 +9,11 @@
     <body>
         <header>
             <h1>Alex' Blog</h1>
+            <% if(isAdmin) { %>
+                <a href="/admin/logout">Logout</a>
+            <% } else { %>
+                <a href="/admin/login">Admin Login</a>
+            <% } %>
             <nav>
                 <a href="/blog/landing.html">Home</a>
                 <a href="/about">About</a>
@@ -21,11 +26,15 @@
             <h2><%= post.title %></h2>
             <p><%= post.description %></p>
             <hr>
-            <p><%= post.content %></p>
-            <br>
-            <a href="/posts/<%= post.slug %>/edit">Edit</a> | 
-            <a href="/posts/<%= post.slug %>/delete">Delete</a>
-            <br><br>
+            <div class="post-content">
+                <p><%= post.content %></p>
+            </div>
+            <% if(isAdmin) { %>
+                <div class="actions">
+                    <a href="/posts/<%= post.slug %>/edit">Edit</a>
+                    <a href="/posts/<%= post.slug %>/delete">Delete</a>
+                </div>
+            <% } %>
             <a href="/posts">← Back to posts</a>
         </main>
 

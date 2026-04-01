@@ -4,6 +4,7 @@ const express = require('express')
 const { logger } = require('./middleware/logger.js')
 const mongoose = require('mongoose')
 const Post = require('./models/post.js')
+const session = require('express-session')
 
 const app = express()
 
@@ -13,10 +14,25 @@ mongoose.connect(process.env.MONGODB_URI)
 
 app.set('view engine', 'ejs')
 app.use(express.urlencoded({ extended: true }))
-
+app.use(session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    cookie: { secure: false }
+}))
 
 app.use('/blog', express.static('public'))
 app.use(logger)
+
+app.use((request, response, next) => {
+    response.locals.isAdmin = request.session.isAdmin || false
+    next()
+})
+
+const requireAdmin = (request, response, next) => {
+    if(!request.session.isAdmin) return response.redirect('/admin/login')
+    next()
+}
 
 app.get('/', (request, response) => {
     response.render('index')
@@ -26,7 +42,7 @@ app.get('/about', (request, response) => {
     response.sendFile('about.html', { root: 'public' })
 })
 
-app.get('/posts/new', (request, response) => {
+app.get('/posts/new', requireAdmin, (request, response) => {
     response.render('posts/new')
 })
 
@@ -40,12 +56,11 @@ app.get('/posts', async (request, response) => {
     }
 })
 
-app.get('/posts/:slug/edit', async (request, response) => {
+app.get('/posts/:slug/edit', requireAdmin, async (request, response) => {
     try {
         const slug = request.params.slug
         const post = await Post.findOne({ slug: slug }).exec()
         if(!post) throw new Error('Post not found')
-
         response.render('posts/edit', { post: post })
     } catch(error) {
         console.error(error)
@@ -53,7 +68,7 @@ app.get('/posts/:slug/edit', async (request, response) => {
     }
 })
 
-app.get('/posts/:slug/delete', async (request, response) => {
+app.get('/posts/:slug/delete', requireAdmin, async (request, response) => {
     try {
         await Post.findOneAndDelete({ slug: request.params.slug })
         response.redirect('/posts')
@@ -68,7 +83,6 @@ app.get('/posts/:slug', async (request, response) => {
         const slug = request.params.slug
         const post = await Post.findOne({ slug: slug }).exec()
         if(!post) throw new Error('Post not found')
-
         response.render('posts/show', { post: post })
     } catch(error) {
         console.error(error)
@@ -85,7 +99,7 @@ app.post('/contact', (request, response) => {
     response.sendFile('thankyou.html', { root: 'public' })
 })
 
-app.post('/posts', async (request, response) => {
+app.post('/posts', requireAdmin, async (request, response) => {
     try {
         const post = new Post({
             title: request.body.title,
@@ -102,7 +116,7 @@ app.post('/posts', async (request, response) => {
     }
 })
 
-app.post('/posts/:slug', async (request, response) => {
+app.post('/posts/:slug', requireAdmin, async (request, response) => {
     try {
         const post = await Post.findOneAndUpdate(
             { slug: request.params.slug },
@@ -122,7 +136,28 @@ app.post('/posts/:slug', async (request, response) => {
     }
 })
 
+app.get('/admin/login', (request, response) => {
+    response.render('admin/login', { error: null })
+})
+
+app.post('/admin/login', (request, response) => {
+    if(request.body.password === process.env.ADMIN_PASSWORD) {
+        request.session.isAdmin = true
+        response.redirect('/admin')
+    } else {
+        response.render('admin/login', { error: 'Wrong password, try again!' })
+    }
+})
+
+app.get('/admin', requireAdmin, (request, response) => {
+    response.render('admin/index')
+})
+
+app.get('/admin/logout', (request, response) => {
+    request.session.destroy()
+    response.redirect('/admin/login')
+})
+
 app.listen(process.env.PORT, () => {
     console.log(`Started server on port ${process.env.PORT}`)
 })
-

@@ -3,17 +3,13 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Alex' Blog - Posts</title>
+        <title>Alex' Blog - Admin</title>
         <link rel="stylesheet" href="/blog/css/style.css" />
     </head>
     <body>
         <header>
             <h1>Alex' Blog</h1>
-            <% if(isAdmin) { %>
-                <a href="/admin/logout">Logout</a>
-            <% } else { %>
-                <a href="/admin/login">Admin Login</a>
-            <% } %>
+            <a href="/admin/logout">Logout</a>
             <nav>
                 <a href="/blog/landing.html">Home</a>
                 <a href="/about">About</a>
@@ -23,20 +19,12 @@
         </header>
 
         <main>
-            <h2>Posts</h2>
-            <% if(isAdmin) { %>
-                <a href="/posts/new" class="new-post-link">+ New Post</a>
-            <% } %>
+            <h2>Admin Dashboard</h2>
             <ul>
-                <% posts.forEach(post => { %>
-                    <li>
-                        <a href="/posts/<%= post.slug %>">
-                            <h3><%= post.title %></h3>
-                            <p><%= post.description %></p>
-                        </a>
-                    </li>
-                <% }) %>
+                <li><a href="/posts/new">+ Create New Post</a></li>
             </ul>
+            <br>
+            <a href="/admin/logout">Logout</a>
         </main>
 
         <footer>

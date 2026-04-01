@@ -9,6 +9,11 @@
     <body>
         <header>
             <h1>Alex' Blog</h1>
+            <% if(isAdmin) { %>
+                <a href="/admin/logout">Logout</a>
+            <% } else { %>
+                <a href="/admin/login">Admin Login</a>
+            <% } %>
             <nav>
                 <a href="/blog/landing.html">Home</a>
                 <a href="/about">About</a>
